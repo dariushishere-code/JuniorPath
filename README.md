@@ -7,7 +7,22 @@
 ![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6)
 ![Tailwind](https://img.shields.io/badge/Tailwind-4-06B6D4)
 
-## ✨ Features
+## Deploy to Netlify
+
+1. Push this repo to GitHub
+2. In Netlify: **Add new site → Import an existing project**
+3. Build settings are already in `netlify.toml`:
+   - Build command: `npm run build`
+   - Publish directory: `dist`
+4. SPA redirects are configured (`/* → /index.html`) so client routes work
+
+Or use the Netlify CLI:
+
+```bash
+npm run build
+npx netlify deploy --prod --dir=dist
+```
+
 
 - **🗺️ Horizontal Roadmap** — Visual tree view of 10 projects per stack (Beginner → Advanced)
 - **🎯 30 Projects** — 10 each for Frontend, Backend, and Fullstack paths

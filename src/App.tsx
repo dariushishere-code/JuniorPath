@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { useStore } from './store/useStore';
 import Navbar from './components/Navbar';
+import AppDock from './components/AppDock';
 import Landing from './pages/Landing';
 import { Login, Signup } from './pages/Auth';
 import StackSelection from './pages/StackSelection';
@@ -22,7 +23,7 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
 function App() {
   return (
     <BrowserRouter>
-      <div className="min-h-screen bg-[#0A0A0A] text-white">
+      <div className="min-h-screen bg-[#0A0A0A] text-white pb-28">
         <Navbar />
         <Routes>
           <Route path="/" element={<Landing />} />
@@ -51,6 +52,7 @@ function App() {
           } />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
+        <AppDock />
       </div>
     </BrowserRouter>
   );
