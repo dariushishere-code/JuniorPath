@@ -6,6 +6,7 @@
 ![React](https://img.shields.io/badge/React-18-61DAFB)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6)
 ![Tailwind](https://img.shields.io/badge/Tailwind-4-06B6D4)
+![Vite](https://img.shields.io/badge/Vite-6-646CFF)
 
 ## Deploy to Netlify
 
@@ -24,15 +25,18 @@ npx netlify deploy --prod --dir=dist
 ```
 
 
+## ✨ Features
+
 - **🗺️ Horizontal Roadmap** — Visual tree view of 10 projects per stack (Beginner → Advanced)
 - **🎯 30 Projects** — 10 each for Frontend, Backend, and Fullstack paths
 - **💻 In-Browser Coding** — StackBlitz integration for beginner projects
 - **🃏 150 Flashcards** — 50 per stack with 3D flip animation
 - **🏆 Points System** — Gamified with signup bonus (+50), project completion (+100), flashcards (+10)
-- **🔐 Authentication** — Email/password auth with protected routes
+- **🔐 Authentication** — Email/password auth with PBKDF2 hashing and protected routes
 - **🐍 Snake Game** — Take a break with smooth jazz vibes
 - **📱 Fully Responsive** — Mobile-first design
 - **🌙 Premium Dark UI** — Modern, developer-focused aesthetic
+- **⚡ Performance Optimized** — Code splitting, lazy loading, and efficient bundling
 
 ## 🎨 Tech Stack
 
@@ -81,15 +85,27 @@ npm install
 # Start development server
 npm run dev
 
-# Build for production
+# Build for production (optimized with code splitting)
 npm run build
+
+# Type check without emitting files
+npm run typecheck
 ```
+
+### Development Commands
+
+| Command | Description |
+|---------|-------------|
+| `npm run dev` | Start development server with HMR |
+| `npm run build` | Type check and build for production |
+| `npm run preview` | Preview production build locally |
+| `npm run typecheck` | Run TypeScript type checking only |
 
 ## 📁 Project Structure
 
 ```
 src/
-├── App.tsx              # Main app with routing
+├── App.tsx              # Main app with routing and code splitting
 ├── main.tsx             # Entry point
 ├── index.css            # Global styles + Tailwind
 ├── store/
@@ -98,7 +114,16 @@ src/
 │   ├── projects.ts      # 30 project definitions
 │   └── flashcards.ts    # 150 flashcards
 ├── components/
-│   └── Navbar.tsx       # Navigation with points display
+│   ├── Navbar.tsx       # Navigation with points display
+│   ├── AppDock.tsx      # Bottom dock navigation
+│   └── ui/              # Reusable UI components
+│       ├── aurora-hero.tsx
+│       ├── glass-dock.tsx
+│       ├── perspective-grid.tsx
+│       ├── radial-glow-button.tsx
+│       ├── spotlight-navbar.tsx
+│       ├── why-us-bento.tsx
+│       └── animated-footer.tsx
 └── pages/
     ├── Landing.tsx       # Hero + features + stacks
     ├── Auth.tsx          # Login & Signup
@@ -203,6 +228,34 @@ For production with Supabase:
 VITE_SUPABASE_URL=your_supabase_url
 VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
 ```
+
+## ⚡ Performance Optimizations
+
+The application includes several performance optimizations:
+
+### Code Splitting
+- **Lazy-loaded routes**: All pages are lazy-loaded using React's `lazy()` and `Suspense`
+- **Chunk splitting**: Vite automatically splits vendor code and large dependencies
+- **Dynamic imports**: Auth components (Login/Signup) loaded separately
+
+### Bundle Optimization
+- **Tree shaking**: Unused code eliminated during build
+- **Minification**: JavaScript and CSS minified with gzip compression
+- **Asset optimization**: CSS extracted and optimized
+
+### Build Stats (Production)
+| Asset Type | Size (Raw) | Size (Gzipped) |
+|------------|-----------|----------------|
+| Main JS    | 251 KB    | 84 KB          |
+| Main CSS   | 50 KB     | 9 KB           |
+| Landing    | 19 KB     | 6 KB           |
+| Vendor     | 60 KB     | 19 KB          |
+
+### Runtime Performance
+- **React 18**: Concurrent rendering for smoother UI
+- **Framer Motion**: GPU-accelerated animations
+- **Zustand**: Lightweight state management with persistence
+- **Web Audio API**: Efficient audio generation for Snake game
 
 ## 📄 Database Schema (Supabase - Future)
 
