@@ -3,33 +3,38 @@ import { motion } from 'framer-motion';
 import { ArrowRight, Code2, CheckCircle2, Star } from 'lucide-react';
 import { useStore } from '../store/useStore';
 import { getProjectsByStack } from '../data/projects';
+import { useLanguage } from '../i18n/useLanguage';
 import { AuroraHero } from '../components/ui/aurora-hero';
 import { WhyUsBento } from '../components/ui/why-us-bento';
 import { RadialGlowButton } from '../components/ui/radial-glow-button';
 
 export default function Landing() {
   const { isAuthenticated } = useStore();
+  const { t } = useLanguage();
   const navigate = useNavigate();
 
   const stacks = [
     {
       id: 'frontend' as const,
-      name: 'Frontend',
-      tech: 'Next.js + TypeScript',
+      name: t('landing.frontend'),
+      tech: t('landing.frontendTech'),
+      desc: t('landing.frontendDesc'),
       color: 'from-blue-500 to-cyan-500',
       projects: getProjectsByStack('frontend'),
     },
     {
       id: 'backend' as const,
-      name: 'Backend',
-      tech: 'Node.js + .NET',
+      name: t('landing.backend'),
+      tech: t('landing.backendTech'),
+      desc: t('landing.backendDesc'),
       color: 'from-green-500 to-emerald-500',
       projects: getProjectsByStack('backend'),
     },
     {
       id: 'fullstack' as const,
-      name: 'Fullstack',
-      tech: 'Next.js + Node.js + .NET',
+      name: t('landing.fullstack'),
+      tech: t('landing.fullstackTech'),
+      desc: t('landing.fullstackDesc'),
       color: 'from-purple-500 to-pink-500',
       projects: getProjectsByStack('fullstack'),
     },
@@ -53,7 +58,7 @@ export default function Landing() {
           >
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-purple-500/10 border border-purple-500/20 mb-8">
               <Star size={14} className="text-purple-400" />
-              <span className="text-sm text-purple-300">Virtual Remote Internship Platform</span>
+              <span className="text-sm text-purple-300">{t('landing.badge')}</span>
             </div>
           </motion.div>
 
@@ -66,7 +71,7 @@ export default function Landing() {
             Junior<span className="text-purple-400">Path</span>
             <br />
             <span className="gradient-text text-3xl sm:text-4xl md:text-5xl">
-              Build Real Projects. Become Job-Ready.
+              {t('landing.title')}
             </span>
           </motion.h1>
 
@@ -76,8 +81,7 @@ export default function Landing() {
             transition={{ duration: 0.6, delay: 0.2 }}
             className="text-lg sm:text-xl text-gray-400 max-w-2xl mx-auto mb-10"
           >
-            Complete 10 portfolio-ready projects in Frontend, Backend, or Fullstack.
-            Guided steps, points, flashcards — skills employers actually want.
+            {t('landing.desc')}
           </motion.p>
 
           <motion.div
@@ -92,7 +96,7 @@ export default function Landing() {
                 onClick={() => navigate('/dashboard')}
                 className="inline-flex items-center gap-2"
               >
-                Go to Dashboard
+                {t('landing.goToDashboard')}
                 <ArrowRight size={18} />
               </RadialGlowButton>
             ) : (
@@ -102,14 +106,14 @@ export default function Landing() {
                   onClick={() => navigate('/signup')}
                   className="inline-flex items-center gap-2"
                 >
-                  Start Free — Get 50 Points
+                  {t('landing.startBuilding')}
                   <ArrowRight size={18} />
                 </RadialGlowButton>
                 <Link
                   to="/login"
                   className="px-8 py-4 rounded-xl border border-white/10 hover:border-white/20 text-white font-semibold text-lg transition-all"
                 >
-                  Login
+                  {t('nav.login')}
                 </Link>
               </>
             )}
@@ -122,9 +126,9 @@ export default function Landing() {
             className="mt-16 grid grid-cols-3 gap-8 max-w-md mx-auto"
           >
             {[
-              { value: '30', label: 'Projects' },
-              { value: '150', label: 'Flashcards' },
-              { value: '3', label: 'Stacks' },
+              { value: '30', label: t('landing.projectsCount') },
+              { value: '150', label: t('nav.flashcards') },
+              { value: '3', label: t('landing.stacks') || 'Stacks' },
             ].map((stat) => (
               <div key={stat.label} className="text-center">
                 <div className="text-2xl sm:text-3xl font-bold text-white">{stat.value}</div>
@@ -144,9 +148,9 @@ export default function Landing() {
             viewport={{ once: true }}
             className="text-center mb-10"
           >
-            <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">Why JuniorPath</h2>
+            <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">{t('why.title')}</h2>
             <p className="text-gray-400 text-lg max-w-2xl mx-auto">
-              Everything you need to go from junior to interview-ready.
+              {t('why.desc')}
             </p>
           </motion.div>
           <WhyUsBento />
@@ -162,9 +166,9 @@ export default function Landing() {
             viewport={{ once: true }}
             className="text-center mb-16"
           >
-            <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">Choose Your Path</h2>
+            <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">{t('stack.title')}</h2>
             <p className="text-gray-400 text-lg max-w-2xl mx-auto">
-              Every stack has a 10-project tree from beginner to advanced.
+              {t('stack.desc')}
             </p>
           </motion.div>
 
@@ -182,7 +186,8 @@ export default function Landing() {
                   <Code2 size={24} className="text-white" />
                 </div>
                 <h3 className="text-xl font-bold text-white mb-1">{stack.name}</h3>
-                <p className="text-sm text-gray-500 mb-4">{stack.tech} · {stack.projects.length} projects</p>
+                <p className="text-sm text-gray-500 mb-4">{stack.tech} · {stack.projects.length} {t('landing.projectsCount')}</p>
+                <p className="text-sm text-gray-400 mb-4 text-justify">{stack.desc}</p>
                 <div className="relative space-y-0 pl-3">
                   {stack.projects.map((project, j) => (
                     <div key={project.id} className="relative flex items-start gap-3 pb-4 last:pb-0">
@@ -219,15 +224,15 @@ export default function Landing() {
             viewport={{ once: true }}
             className="text-center mb-16"
           >
-            <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">How It Works</h2>
+            <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">{t('how.title')}</h2>
           </motion.div>
 
           <div className="space-y-8">
             {[
-              { step: '01', title: 'Sign Up & Choose Your Stack', desc: 'Create your account, get 50 bonus points, and pick Frontend, Backend, or Fullstack.' },
-              { step: '02', title: 'Follow the Roadmap Tree', desc: 'Projects unlock sequentially. Start beginner and climb to advanced.' },
-              { step: '03', title: 'Build & Submit', desc: 'Code in-browser or locally. Submit your GitHub repo and mark complete.' },
-              { step: '04', title: 'Earn Points & Level Up', desc: '+100 points per project, +10 per flashcard. Track progress and build your portfolio.' },
+              { step: '01', title: t('how.step1.title'), desc: t('how.step1.desc') },
+              { step: '02', title: t('how.step2.title'), desc: t('how.step2.desc') },
+              { step: '03', title: t('how.step3.title'), desc: t('how.step3.desc') },
+              { step: '04', title: t('how.step4.title'), desc: t('how.step4.desc') },
             ].map((item, i) => (
               <motion.div
                 key={item.step}
@@ -258,9 +263,9 @@ export default function Landing() {
           viewport={{ once: true }}
           className="max-w-3xl mx-auto text-center p-12 rounded-3xl bg-gradient-to-br from-purple-500/10 to-green-500/10 border border-white/5"
         >
-          <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">Ready to Start Your Journey?</h2>
+          <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">{t('cta.title')}</h2>
           <p className="text-gray-400 text-lg mb-8">
-            Join junior developers building real projects and landing interviews.
+            {t('cta.desc')}
           </p>
           {!isAuthenticated && (
             <RadialGlowButton
@@ -268,7 +273,7 @@ export default function Landing() {
               onClick={() => navigate('/signup')}
               className="inline-flex items-center gap-2"
             >
-              Get Started Free
+              {t('cta.button')}
               <CheckCircle2 size={18} />
             </RadialGlowButton>
           )}
@@ -279,11 +284,11 @@ export default function Landing() {
         <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-2">
             <Code2 size={16} className="text-purple-400" />
-            <span className="text-sm text-gray-500">JuniorPath © 2026. Built for developers, by developers.</span>
+            <span className="text-sm text-gray-500">{t('footer.rights')}</span>
           </div>
           <div className="flex items-center gap-4 text-sm text-gray-500">
-            <Link to="/suggest" className="hover:text-white transition-colors">Suggest a Project</Link>
-            <Link to="/snake" className="hover:text-white transition-colors">Snake Game</Link>
+            <Link to="/suggest" className="hover:text-white transition-colors">{t('footer.suggest')}</Link>
+            <Link to="/snake" className="hover:text-white transition-colors">{t('footer.snake')}</Link>
           </div>
         </div>
       </footer>

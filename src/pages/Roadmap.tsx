@@ -14,6 +14,7 @@ import { useMemo, useState } from 'react';
 import { useStore, Stack } from '../store/useStore';
 import { getProjectsByStack, isProjectUnlocked } from '../data/projects';
 import { RadialGlowButton } from '../components/ui/radial-glow-button';
+import { useLanguage } from '../i18n/useLanguage';
 
 const STACK_META: Record<
   Stack,
@@ -41,6 +42,7 @@ const STACK_META: Record<
 
 export default function Roadmap() {
   const { user, selectStack } = useStore();
+  const { t, isRTL, num } = useLanguage();
   const [previewStack, setPreviewStack] = useState<Stack | null>(null);
 
   const stackCounts = useMemo(
@@ -56,12 +58,12 @@ export default function Roadmap() {
     return (
       <div className="min-h-screen pt-24 px-4 flex items-center justify-center">
         <div className="text-center space-y-4">
-          <h2 className="text-2xl font-bold text-white">No stack selected</h2>
+          <h2 className="text-2xl font-bold text-white">{t('road.noStack')}</h2>
           <Link
             to="/stack-selection"
             className="inline-block px-6 py-3 rounded-xl bg-purple-600 text-white font-medium"
           >
-            Choose a Stack
+            {t('road.chooseStack')}
           </Link>
         </div>
       </div>
@@ -119,13 +121,13 @@ export default function Roadmap() {
                   }`}
                 >
                   <meta.icon size={16} />
-                  {meta.name}
+                  {t('landing.' + stackId)}
                   <span className="text-xs text-gray-500">
                     {stackCounts.find((c) => c.id === stackId)?.count}
                   </span>
                   {isUserStack && (
                     <span className="text-[10px] uppercase tracking-wide text-purple-400">
-                      yours
+                      {t('road.yours')}
                     </span>
                   )}
                 </button>
@@ -141,11 +143,13 @@ export default function Roadmap() {
             </div>
             <div>
               <h1 className="text-2xl font-bold text-white">
-                {currentStack.name} Roadmap Tree
+                {isRTL
+                  ? `${t('road.tree')} ${t('landing.' + activeStack)}`
+                  : `${t('landing.' + activeStack)} ${t('road.tree')}`}
               </h1>
               <p className="text-sm text-gray-400">
-                {currentStack.tech} · {stackProjects.length} projects
-                {!isOwnStack && ' · preview only'}
+                {currentStack.tech} · {num(stackProjects.length)} {t('road.projects')}
+                {!isOwnStack && <> · {t('road.previewOnly')}</>}
               </p>
             </div>
           </div>
@@ -161,13 +165,13 @@ export default function Roadmap() {
                 />
               </div>
               <span className="text-sm text-gray-400 font-medium">
-                {completedCount}/{stackProjects.length} completed
+                {num(completedCount)}/{num(stackProjects.length)} {t('road.completed')}
               </span>
             </div>
           ) : (
             <div className="flex flex-wrap items-center gap-3">
               <p className="text-sm text-gray-400">
-                Switch to this stack to unlock and complete its projects.
+                {t('road.switchHint')}
               </p>
               <RadialGlowButton
                 type="button"
@@ -177,7 +181,7 @@ export default function Roadmap() {
                   setPreviewStack(null);
                 }}
               >
-                Switch to {currentStack.name}
+                {t('road.switch')} {t('landing.' + activeStack)}
               </RadialGlowButton>
             </div>
           )}
@@ -268,7 +272,7 @@ export default function Roadmap() {
                             : 'text-gray-500'
                         }`}
                       >
-                        {project.title}
+                        {isRTL ? project.titleFa : project.title}
                       </h3>
                     </div>
                     <span
@@ -276,12 +280,12 @@ export default function Roadmap() {
                         project.difficulty,
                       )}`}
                     >
-                      {project.difficulty}
+                      {t('diff.' + project.difficulty)}
                     </span>
                   </div>
 
                   <p className="text-xs text-gray-500 mb-3 line-clamp-2">
-                    {project.description}
+                    {isRTL ? project.descriptionFa : project.description}
                   </p>
 
                   <div className="flex flex-wrap gap-1 mb-3">
@@ -300,12 +304,12 @@ export default function Roadmap() {
                       {project.hasEditor && (
                         <>
                           <Code2 size={12} />
-                          <span>Code in browser</span>
+                          <span>{t('road.codeInBrowser')}</span>
                           <span className="mx-1 text-gray-600">·</span>
                         </>
                       )}
                       <span className="inline-flex items-center gap-1">
-                        Open project <ArrowRight size={12} />
+                        {t('road.openProject')} <ArrowRight size={12} />
                       </span>
                     </div>
                   )}
@@ -337,15 +341,15 @@ export default function Roadmap() {
         >
           <div className="flex items-center gap-2">
             <div className="w-3 h-3 rounded-full bg-green-500" />
-            <span className="text-gray-400">Completed</span>
+            <span className="text-gray-400">{t('road.completed')}</span>
           </div>
           <div className="flex items-center gap-2">
             <div className="w-3 h-3 rounded-full bg-purple-500 animate-pulse" />
-            <span className="text-gray-400">Available</span>
+            <span className="text-gray-400">{t('road.available')}</span>
           </div>
           <div className="flex items-center gap-2">
             <div className="w-3 h-3 rounded-full bg-gray-700" />
-            <span className="text-gray-400">Locked</span>
+            <span className="text-gray-400">{t('road.locked')}</span>
           </div>
         </motion.div>
       </div>

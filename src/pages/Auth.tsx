@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Code2, Mail, Lock, User, ArrowRight, AlertCircle } from 'lucide-react';
 import { useStore } from '../store/useStore';
+import { useLanguage } from '../i18n/useLanguage';
 import { RadialGlowButton } from '../components/ui/radial-glow-button';
 import { PerspectiveGrid } from '../components/ui/perspective-grid';
 
@@ -12,13 +13,14 @@ export function Login() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const { login } = useStore();
+  const { t } = useLanguage();
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
     if (!email || !password) {
-      setError('Please fill in all fields');
+      setError(t('auth.login.error.empty'));
       return;
     }
     setLoading(true);
@@ -27,10 +29,10 @@ export function Login() {
       if (success) {
         navigate('/dashboard');
       } else {
-        setError('Invalid email or password');
+        setError(t('auth.login.error.invalid'));
       }
     } catch {
-      setError('Something went wrong. Please try again.');
+      setError(t('auth.login.error.general'));
     } finally {
       setLoading(false);
     }
@@ -58,8 +60,8 @@ export function Login() {
               </div>
               <span className="text-xl font-bold text-white">Junior<span className="text-purple-400">Path</span></span>
             </Link>
-            <h1 className="text-2xl font-bold text-white">Welcome back</h1>
-            <p className="text-gray-400 mt-2">Sign in to continue your journey</p>
+            <h1 className="text-2xl font-bold text-white">{t('auth.login.title')}</h1>
+            <p className="text-gray-400 mt-2">{t('auth.login.desc')}</p>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-4 p-6 rounded-2xl bg-[#161616]/80 border border-white/5 backdrop-blur-sm">
@@ -71,7 +73,7 @@ export function Login() {
           )}
 
           <div>
-            <label className="block text-sm font-medium text-gray-300 mb-1.5">Email</label>
+            <label className="block text-sm font-medium text-gray-300 mb-1.5">{t('auth.email')}</label>
             <div className="relative">
               <Mail size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500" />
               <input
@@ -86,7 +88,7 @@ export function Login() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-300 mb-1.5">Password</label>
+            <label className="block text-sm font-medium text-gray-300 mb-1.5">{t('auth.password')}</label>
             <div className="relative">
               <Lock size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500" />
               <input
@@ -105,15 +107,15 @@ export function Login() {
             disabled={loading}
             className="w-full !min-w-0"
           >
-            {loading ? 'Signing in…' : 'Sign In'}
+            {loading ? t('auth.login.loading') : t('auth.login.submit')}
             {!loading && <ArrowRight size={16} />}
           </RadialGlowButton>
         </form>
 
         <p className="text-center text-sm text-gray-400 mt-6">
-          Don't have an account?{' '}
+          {t('auth.login.noAccount')}{' '}
           <Link to="/signup" className="text-purple-400 hover:text-purple-300 font-medium">
-            Sign up free
+            {t('auth.login.signupLink')}
           </Link>
         </p>
         </motion.div>
@@ -129,17 +131,18 @@ export function Signup() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const { signup } = useStore();
+  const { t } = useLanguage();
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
     if (!name || !email || !password) {
-      setError('Please fill in all fields');
+      setError(t('auth.signup.error.empty'));
       return;
     }
     if (password.length < 6) {
-      setError('Password must be at least 6 characters');
+      setError(t('auth.signup.error.length'));
       return;
     }
     setLoading(true);
@@ -148,10 +151,10 @@ export function Signup() {
       if (success) {
         navigate('/stack-selection');
       } else {
-        setError('An account with this email already exists');
+        setError(t('auth.signup.error.exists'));
       }
     } catch {
-      setError('Something went wrong. Please try again.');
+      setError(t('auth.signup.error.general'));
     } finally {
       setLoading(false);
     }
@@ -179,8 +182,8 @@ export function Signup() {
             </div>
             <span className="text-xl font-bold text-white">Junior<span className="text-purple-400">Path</span></span>
           </Link>
-          <h1 className="text-2xl font-bold text-white">Create your account</h1>
-          <p className="text-gray-400 mt-2">Get 50 bonus points when you sign up!</p>
+          <h1 className="text-2xl font-bold text-white">{t('auth.signup.title')}</h1>
+          <p className="text-gray-400 mt-2">{t('auth.signup.desc')}</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4 p-6 rounded-2xl bg-[#161616]/80 border border-white/5 backdrop-blur-sm">
@@ -192,7 +195,7 @@ export function Signup() {
           )}
 
           <div>
-            <label className="block text-sm font-medium text-gray-300 mb-1.5">Full Name</label>
+            <label className="block text-sm font-medium text-gray-300 mb-1.5">{t('auth.name')}</label>
             <div className="relative">
               <User size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500" />
               <input
@@ -207,7 +210,7 @@ export function Signup() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-300 mb-1.5">Email</label>
+            <label className="block text-sm font-medium text-gray-300 mb-1.5">{t('auth.email')}</label>
             <div className="relative">
               <Mail size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500" />
               <input
@@ -222,7 +225,7 @@ export function Signup() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-300 mb-1.5">Password</label>
+            <label className="block text-sm font-medium text-gray-300 mb-1.5">{t('auth.password')}</label>
             <div className="relative">
               <Lock size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500" />
               <input
@@ -241,15 +244,15 @@ export function Signup() {
             disabled={loading}
             className="w-full !min-w-0"
           >
-            {loading ? 'Creating account…' : 'Create Account & Get 50 Points'}
+            {loading ? t('auth.signup.loading') : t('auth.signup.submit')}
             {!loading && <ArrowRight size={16} />}
           </RadialGlowButton>
         </form>
 
         <p className="text-center text-sm text-gray-400 mt-6">
-          Already have an account?{' '}
+          {t('auth.signup.hasAccount')}{' '}
           <Link to="/login" className="text-purple-400 hover:text-purple-300 font-medium">
-            Sign in
+            {t('auth.signup.loginLink')}
           </Link>
         </p>
         </motion.div>

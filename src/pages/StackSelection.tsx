@@ -5,16 +5,19 @@ import { Monitor, Server, Layers, ArrowRight } from 'lucide-react';
 import { useStore, Stack } from '../store/useStore';
 import { getProjectsByStack } from '../data/projects';
 import { RadialGlowButton } from '../components/ui/radial-glow-button';
+import { useLanguage } from '../i18n/useLanguage';
 
 export default function StackSelection() {
   const { user, selectStack } = useStore();
+  const { t } = useLanguage();
   const navigate = useNavigate();
 
   const stacks = [
     {
       id: 'frontend' as Stack,
-      name: 'Frontend',
-      description: 'Build beautiful, interactive user interfaces with Next.js and TypeScript',
+      name: t('landing.frontend'),
+      description: t('stack.frontend.desc'),
+      cta: t('stack.startFrontend'),
       icon: Monitor,
       color: 'from-blue-500 to-cyan-500',
       borderColor: 'hover:border-blue-500/30',
@@ -23,8 +26,9 @@ export default function StackSelection() {
     },
     {
       id: 'backend' as Stack,
-      name: 'Backend',
-      description: 'Build robust APIs and server-side applications with Node.js and .NET',
+      name: t('landing.backend'),
+      description: t('stack.backend.desc'),
+      cta: t('stack.startBackend'),
       icon: Server,
       color: 'from-green-500 to-emerald-500',
       borderColor: 'hover:border-green-500/30',
@@ -33,8 +37,9 @@ export default function StackSelection() {
     },
     {
       id: 'fullstack' as Stack,
-      name: 'Fullstack',
-      description: 'Master both frontend and backend to build complete web applications',
+      name: t('landing.fullstack'),
+      description: t('stack.fullstack.desc'),
+      cta: t('stack.startFullstack'),
       icon: Layers,
       color: 'from-purple-500 to-pink-500',
       borderColor: 'hover:border-purple-500/30',
@@ -66,9 +71,9 @@ export default function StackSelection() {
           animate={{ opacity: 1, y: 0 }}
           className="text-center mb-12"
         >
-          <h1 className="text-3xl sm:text-4xl font-bold text-white mb-4">Choose Your Stack</h1>
+          <h1 className="text-3xl sm:text-4xl font-bold text-white mb-4">{t('stack.title')}</h1>
           <p className="text-gray-400 text-lg max-w-2xl mx-auto">
-            Each path has a 10-project tree from beginner to advanced. You can preview and switch stacks later from the roadmap.
+            {t('stack.desc')}
           </p>
         </motion.div>
 
@@ -120,7 +125,7 @@ export default function StackSelection() {
                 onClick={() => handleSelect(stack.id)}
                 className="w-full !min-w-0"
               >
-                Start {stack.name}
+                {stack.cta}
                 <ArrowRight size={16} />
               </RadialGlowButton>
             </motion.div>

@@ -11,73 +11,22 @@ import {
   Zap,
 } from 'lucide-react';
 import { cn } from '../../lib/utils';
+import { useLanguage } from '../../i18n/useLanguage';
 
 export interface WhyUsBentoProps {
   className?: string;
 }
 
-const panels: Array<{
-  id: string;
-  title: string;
-  description: string;
-  icon: typeof Rocket;
-  span: string;
-  accent: string;
-  cluster?: boolean;
-  showXp?: boolean;
-  showAvatars?: boolean;
-}> = [
-  {
-    id: 'projects',
-    title: 'Real Projects',
-    description:
-      'Ship 10 portfolio-ready builds — not toy tutorials. Guided steps, real scope, employer-facing outcomes.',
-    icon: Rocket,
-    span: 'md:col-span-2',
-    accent: 'from-teal-500/20 to-transparent',
-  },
-  {
-    id: 'stacks',
-    title: '3 Stacks',
-    description: 'Frontend, Backend, or Fullstack — pick your path and go deep.',
-    icon: Layers,
-    span: 'md:col-span-1',
-    accent: 'from-lime-500/20 to-transparent',
-    cluster: true,
-  },
-  {
-    id: 'points',
-    title: 'Gamified Points',
-    description:
-      'Earn XP, unlock milestones, and stay motivated as you clear each project stage.',
-    icon: Trophy,
-    span: 'md:col-span-1',
-    accent: 'from-amber-500/20 to-transparent',
-    showXp: true,
-  },
-  {
-    id: 'flashcards',
-    title: 'Flashcards',
-    description:
-      'Reinforce concepts with stack-specific cards so theory sticks while you build.',
-    icon: BookOpen,
-    span: 'md:col-span-1',
-    accent: 'from-cyan-500/20 to-transparent',
-  },
-  {
-    id: 'portfolio',
-    title: 'Job-Ready Portfolio',
-    description:
-      'Finish with a coherent project trail that proves skills — interviews, not just certificates.',
-    icon: Briefcase,
-    span: 'md:col-span-1',
-    accent: 'from-emerald-500/20 to-transparent',
-    showAvatars: true,
-  },
-];
-
 function LetterLiftTitle({ text }: { text: string }) {
   const reduced = useReducedMotion();
+  const { isRTL } = useLanguage();
+
+  // Persian/Arabic is a cursive script: splitting it into per-character
+  // inline-block spans disconnects letter-joining and can mirror glyph order.
+  // Keep it as one plain string in RTL mode.
+  if (isRTL) {
+    return <span>{text}</span>;
+  }
 
   if (reduced) {
     return <span>{text}</span>;
@@ -100,10 +49,11 @@ function LetterLiftTitle({ text }: { text: string }) {
 }
 
 function StackCluster() {
+  const { t } = useLanguage();
   const items = [
-    { Icon: Monitor, label: 'FE', tip: 'Frontend' },
-    { Icon: Server, label: 'BE', tip: 'Backend' },
-    { Icon: Code2, label: 'FS', tip: 'Fullstack' },
+    { Icon: Monitor, label: 'FE', tip: t('landing.frontend') },
+    { Icon: Server, label: 'BE', tip: t('landing.backend') },
+    { Icon: Code2, label: 'FS', tip: t('landing.fullstack') },
   ];
 
   return (
@@ -124,22 +74,83 @@ function StackCluster() {
 
 export function WhyUsBento({ className }: WhyUsBentoProps) {
   const reduced = useReducedMotion();
+  const { t, isRTL } = useLanguage();
+
+  const panels: Array<{
+    id: string;
+    title: string;
+    description: string;
+    icon: typeof Rocket;
+    span: string;
+    accent: string;
+    cluster?: boolean;
+    showXp?: boolean;
+    showAvatars?: boolean;
+  }> = [
+    {
+      id: 'projects',
+      title: t('why.projects.title'),
+      description: t('why.projects.desc'),
+      icon: Rocket,
+      span: 'md:col-span-2',
+      accent: 'from-teal-500/20 to-transparent',
+    },
+    {
+      id: 'stacks',
+      title: t('why.stacks.title'),
+      description: t('why.stacks.desc'),
+      icon: Layers,
+      span: 'md:col-span-1',
+      accent: 'from-lime-500/20 to-transparent',
+      cluster: true,
+    },
+    {
+      id: 'points',
+      title: t('why.points.title'),
+      description: t('why.points.desc'),
+      icon: Trophy,
+      span: 'md:col-span-1',
+      accent: 'from-amber-500/20 to-transparent',
+      showXp: true,
+    },
+    {
+      id: 'flashcards',
+      title: t('why.flashcards.title'),
+      description: t('why.flashcards.desc'),
+      icon: BookOpen,
+      span: 'md:col-span-1',
+      accent: 'from-cyan-500/20 to-transparent',
+    },
+    {
+      id: 'portfolio',
+      title: t('why.portfolio.title'),
+      description: t('why.portfolio.desc'),
+      icon: Briefcase,
+      span: 'md:col-span-1',
+      accent: 'from-emerald-500/20 to-transparent',
+      showAvatars: true,
+    },
+  ];
 
   return (
     <section className={cn('w-full', className)} aria-labelledby="why-us-heading">
       <div className="mb-8 max-w-2xl">
-        <p className="mb-2 text-sm font-medium uppercase tracking-wider text-teal-400/90">
-          Why JuniorPath
+        <p
+          className={cn(
+            'mb-2 text-sm font-medium text-teal-400/90',
+            isRTL ? '' : 'uppercase tracking-wider',
+          )}
+        >
+          {t('why.title')}
         </p>
         <h2
           id="why-us-heading"
           className="text-3xl font-bold text-white sm:text-4xl"
         >
-          Built like a virtual internship
+          {t('why.heading')}
         </h2>
         <p className="mt-3 text-gray-400">
-          Structure, stacks, and outcomes designed so juniors ship work that actually
-          opens doors.
+          {t('why.desc')}
         </p>
       </div>
 
@@ -188,7 +199,7 @@ export function WhyUsBento({ className }: WhyUsBentoProps) {
                 {panel.showXp && (
                   <div className="mt-4 inline-flex items-center gap-1.5 rounded-lg border border-white/10 bg-white/5 px-3 py-1.5 text-xs font-medium text-lime-300">
                     <Zap size={14} aria-hidden />
-                    +XP on every milestone
+                    {t('why.xp')}
                   </div>
                 )}
 

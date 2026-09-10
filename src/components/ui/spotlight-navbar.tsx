@@ -14,6 +14,7 @@ export interface SpotlightNavbarProps {
     className?: string;
     onItemClick?: (item: NavItem, index: number) => void;
     defaultActiveIndex?: number;
+    activeHref?: string;
 }
 
 export function SpotlightNavbar({
@@ -27,6 +28,7 @@ export function SpotlightNavbar({
     className,
     onItemClick,
     defaultActiveIndex = 0,
+    activeHref,
 }: SpotlightNavbarProps) {
     const navRef = useRef<HTMLDivElement>(null);
     const [activeIndex, setActiveIndex] = useState(defaultActiveIndex);
@@ -36,6 +38,15 @@ export function SpotlightNavbar({
     // Refs for the "light" positions so we can animate them imperatively
     const spotlightX = useRef(0);
     const ambienceX = useRef(0);
+
+    // Sync the active pill with the current route (when activeHref is provided)
+    useEffect(() => {
+        if (!activeHref) return;
+        const idx = items.findIndex(
+            (item) => item.href === activeHref || (activeHref.startsWith(item.href) && item.href !== '/'),
+        );
+        if (idx >= 0) setActiveIndex(idx);
+    }, [activeHref, items]);
 
     useEffect(() => {
         const checkTheme = () => {
@@ -73,7 +84,7 @@ export function SpotlightNavbar({
                     type: "spring",
                     stiffness: 200,
                     damping: 20,
-                    onUpdate: (v) => {
+                    onUpdate: (v: number) => {
                         spotlightX.current = v;
                         nav.style.setProperty("--spotlight-x", `${v}px`);
                     }
@@ -105,7 +116,7 @@ export function SpotlightNavbar({
                 type: "spring",
                 stiffness: 200,
                 damping: 20,
-                onUpdate: (v) => {
+                onUpdate: (v: number) => {
                     ambienceX.current = v;
                     nav.style.setProperty("--ambience-x", `${v}px`);
                 },
