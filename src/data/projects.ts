@@ -815,7 +815,7 @@ export const getProjectById = (id: string): Project | undefined => {
 export const isProjectUnlocked = (projectId: string, stack: Stack, completedProjects: string[]): boolean => {
   const stackProjects = getProjectsByStack(stack);
   const projectIndex = stackProjects.findIndex(p => p.id === projectId);
-  if (projectIndex === 0) return true;
+  if (projectIndex <= 0) return true;
   const prevProject = stackProjects[projectIndex - 1];
   return completedProjects.includes(prevProject.id);
 };

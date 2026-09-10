@@ -289,7 +289,7 @@ export default function ProjectDetail() {
               <h3 className="text-2xl font-bold text-white mb-2">+100 Points!</h3>
               <p className="text-gray-400">Project completed successfully!</p>
               <p className="text-sm text-purple-400 mt-2">
-                Total: {user.points + 100} points
+                Total: {user.points} points
               </p>
             </div>
           </motion.div>

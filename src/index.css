@@ -107,6 +107,24 @@ body {
   box-shadow: 0 0 20px rgba(34, 197, 94, 0.3), 0 0 60px rgba(34, 197, 94, 0.1);
 }
 
+/* Spotlight Navbar */
+.spotlight-nav-bg {
+  background: rgba(22, 22, 22, 0.65);
+  backdrop-filter: blur(16px);
+}
+
+.dark .spotlight-nav-bg {
+  background: rgba(22, 22, 22, 0.65);
+}
+
+.glass-border {
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.spotlight-nav-shadow {
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+}
+
 /* Snake game canvas */
 .snake-canvas {
   image-rendering: pixelated;

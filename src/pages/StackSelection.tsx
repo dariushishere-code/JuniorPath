@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Monitor, Server, Layers, ArrowRight } from 'lucide-react';
@@ -42,13 +43,18 @@ export default function StackSelection() {
     },
   ];
 
+  useEffect(() => {
+    if (user?.selectedStack) {
+      navigate('/roadmap');
+    }
+  }, [user?.selectedStack, navigate]);
+
   const handleSelect = (stack: Stack) => {
     selectStack(stack);
     navigate('/roadmap');
   };
 
   if (user?.selectedStack) {
-    navigate('/roadmap');
     return null;
   }
 

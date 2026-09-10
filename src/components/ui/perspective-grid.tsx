@@ -59,7 +59,7 @@ export function PerspectiveGrid({
                     tiles.map((_, i) => (
                         <div
                             key={i}
-                            className="tile min-h-[1px] min-w-[1px] border border-oklch(0.922 0 0) border-gray-300 dark:border-gray-700 bg-transparent transition-colors duration-[1500ms] hover:duration-0 dark:border-oklch(1 0 0 / 10%)"
+                            className="tile min-h-[1px] min-w-[1px] border border-gray-300 dark:border-gray-700 bg-transparent transition-colors duration-[1500ms] hover:duration-0"
                         />
                     ))}
             </div>

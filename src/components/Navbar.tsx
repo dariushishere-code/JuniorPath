@@ -1,30 +1,54 @@
-import { Link, useLocation } from 'react-router-dom';
-import { motion } from 'framer-motion';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Code2, LogOut, Zap } from 'lucide-react';
 import { useStore } from '../store/useStore';
+import { SpotlightNavbar, NavItem } from '../components/ui/spotlight-navbar';
 
 export default function Navbar() {
   const { user, isAuthenticated, logout } = useStore();
   const location = useLocation();
+  const navigate = useNavigate();
+
+  // Build nav items based on auth state
+  const navItems: NavItem[] = isAuthenticated
+    ? [
+        { label: 'Home', href: '/' },
+        { label: 'Dashboard', href: '/dashboard' },
+        { label: 'Roadmap', href: '/roadmap' },
+        { label: 'Flashcards', href: '/flashcards' },
+      ]
+    : [
+        { label: 'Home', href: '/' },
+        { label: 'Login', href: '/login' },
+        { label: 'Sign Up', href: '/signup' },
+      ];
+
+  const handleNavClick = (item: NavItem) => {
+    navigate(item.href);
+  };
 
   return (
-    <motion.nav
-      initial={{ y: -20, opacity: 0 }}
-      animate={{ y: 0, opacity: 1 }}
-      className="fixed top-0 left-0 right-0 z-50 glass"
-    >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
-          <Link to={isAuthenticated ? '/dashboard' : '/'} className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-purple-500 to-green-500 flex items-center justify-center">
-              <Code2 size={18} className="text-white" />
-            </div>
-            <span className="text-lg font-bold text-white">
-              Junior<span className="text-purple-400">Path</span>
-            </span>
-          </Link>
+    <nav className="fixed top-0 left-0 right-0 z-50">
+      <div className="relative flex items-center justify-center h-16 px-4 sm:px-6 lg:px-8">
+        {/* Brand (absolute left) */}
+        <Link to={isAuthenticated ? '/dashboard' : '/'} className="absolute left-4 sm:left-8 flex items-center gap-2 shrink-0">
+          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-purple-500 to-green-500 flex items-center justify-center">
+            <Code2 size={18} className="text-white" />
+          </div>
+          <span className="text-lg font-bold text-white">
+            Junior<span className="text-purple-400">Path</span>
+          </span>
+        </Link>
 
-          <div className="flex items-center gap-3 sm:gap-4">
+        {/* Spotlight Navigation (centered) */}
+        <div className="hidden md:flex">
+          <SpotlightNavbar
+            items={navItems}
+            onItemClick={handleNavClick}
+          />
+        </div>
+
+        {/* Auth Controls (absolute right) */}
+        <div className="absolute right-4 sm:right-8 flex items-center gap-3 sm:gap-4 shrink-0">
             {isAuthenticated && user ? (
               <>
                 <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-purple-500/10 border border-purple-500/20">
@@ -44,7 +68,7 @@ export default function Navbar() {
                 </button>
               </>
             ) : (
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-3 md:hidden">
                 {location.pathname !== '/login' && (
                   <Link
                     to="/login"
@@ -64,8 +88,7 @@ export default function Navbar() {
               </div>
             )}
           </div>
-        </div>
       </div>
-    </motion.nav>
+    </nav>
   );
 }

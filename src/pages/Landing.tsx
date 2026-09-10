@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { ArrowRight, Code2, CheckCircle2, Star } from 'lucide-react';
 import { useStore } from '../store/useStore';
 import { getProjectsByStack } from '../data/projects';
-import { PerspectiveGrid } from '../components/ui/perspective-grid';
+import { AuroraHero } from '../components/ui/aurora-hero';
 import { WhyUsBento } from '../components/ui/why-us-bento';
 import { RadialGlowButton } from '../components/ui/radial-glow-button';
 
@@ -38,10 +38,14 @@ export default function Landing() {
   return (
     <div className="min-h-screen bg-[#0A0A0A]">
       {/* Hero */}
-      <section className="relative overflow-hidden pt-32 pb-20 px-4 min-h-[90vh] flex items-center">
-        <PerspectiveGrid gridSize={20} fadeRadius={75} />
+      <section className="relative overflow-hidden min-h-[90vh] flex items-center justify-center">
+        {/* Aurora Background */}
+        <div className="absolute inset-0">
+          <AuroraHero title="" className="h-full min-h-full" />
+        </div>
 
-        <div className="max-w-5xl mx-auto text-center relative z-10">
+        {/* Hero Content */}
+        <div className="max-w-5xl mx-auto text-center relative z-10 px-4 pt-32 pb-20">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}

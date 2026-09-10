@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import { Code2, Mail, Lock, User, ArrowRight, AlertCircle } from 'lucide-react';
 import { useStore } from '../store/useStore';
 import { RadialGlowButton } from '../components/ui/radial-glow-button';
-import { AnimatedFooter } from '../components/ui/animated-footer';
+import { PerspectiveGrid } from '../components/ui/perspective-grid';
 
 export function Login() {
   const [email, setEmail] = useState('');
@@ -40,11 +40,8 @@ export function Login() {
     <div className="relative min-h-screen bg-[#0A0A0A]">
       {/* Cinematic background */}
       <div className="absolute inset-0 z-0">
-        <AnimatedFooter
-          headingLines={['Welcome Back', 'Continue Your Journey']}
-          background="#0A0A0A"
-          revealOnScroll={false}
-        />
+        <PerspectiveGrid gridSize={20} fadeRadius={80} />
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[#0A0A0A]" />
       </div>
 
       {/* Auth form on top */}
@@ -164,11 +161,8 @@ export function Signup() {
     <div className="relative min-h-screen bg-[#0A0A0A]">
       {/* Cinematic background */}
       <div className="absolute inset-0 z-0">
-        <AnimatedFooter
-          headingLines={['Start Building', 'Earn 50 Bonus Points']}
-          background="#0A0A0A"
-          revealOnScroll={false}
-        />
+        <PerspectiveGrid gridSize={20} fadeRadius={80} />
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[#0A0A0A]" />
       </div>
 
       {/* Auth form on top */}
