@@ -18,6 +18,7 @@ export default function Navbar() {
         { label: t('nav.dashboard'), href: '/dashboard' },
         { label: t('nav.roadmap'), href: '/roadmap' },
         { label: t('nav.flashcards'), href: '/flashcards' },
+        { label: t('nav.interview'), href: '/interview-prep' },
       ]
     : [
         { label: t('nav.home'), href: '/' },

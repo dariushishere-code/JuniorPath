@@ -32,7 +32,7 @@ npx netlify deploy --prod --dir=dist
 - **💻 In-Browser Coding** — StackBlitz integration for beginner projects
 - **🃏 150 Flashcards** — 50 per stack with 3D flip animation
 - **🏆 Points System** — Gamified with signup bonus (+50), project completion (+100), flashcards (+10)
-- **🔐 Authentication** — Email/password auth with PBKDF2 hashing and protected routes
+- **🔐 Authentication** — Signup/login powered by Supabase Auth + PostgreSQL (protected routes)
 - **🐍 Snake Game** — Take a break with smooth jazz vibes
 - **📱 Fully Responsive** — Mobile-first design
 - **🌙 Premium Dark UI** — Modern, developer-focused aesthetic
@@ -221,12 +221,12 @@ npm run build
 ```
 
 ### Environment Variables
-No environment variables required for the MVP (uses localStorage for persistence).
+The app uses Supabase for authentication and storage — copy `.env.example` to `.env` and fill in your project values:
 
-For production with Supabase:
+Then run `supabase/schema.sql` in the Supabase SQL Editor and follow the [Supabase setup guide](./SUPABASE.md). For Netlify, add the same variables under **Site configuration → Environment variables**.
 ```env
-VITE_SUPABASE_URL=your_supabase_url
-VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
+VITE_SUPABASE_URL=https://your-project-ref.supabase.co
+VITE_SUPABASE_ANON_KEY=your-anon-or-publishable-key
 ```
 
 ## ⚡ Performance Optimizations

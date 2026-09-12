@@ -16,6 +16,7 @@ export default function AppDock() {
         { icon: 'dashboard', title: t('dock.dashboard'), href: '/dashboard' },
         { icon: 'roadmap', title: t('dock.roadmap'), href: '/roadmap' },
         { icon: 'flashcards', title: t('dock.flashcards'), href: '/flashcards' },
+        { icon: 'interview', title: t('dock.interview'), href: '/interview-prep' },
         { icon: 'suggest', title: t('dock.suggest'), href: '/suggest' },
         { icon: 'snake', title: t('dock.relax'), href: '/snake' },
         {

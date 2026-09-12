@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Trophy, Target, BookOpen, Code2, ExternalLink, ArrowRight, Zap, TrendingUp } from 'lucide-react';
+import { Trophy, Target, BookOpen, Code2, ExternalLink, ArrowRight, Zap, TrendingUp, MessagesSquare } from 'lucide-react';
 import { useStore } from '../store/useStore';
 import { getProjectsByStack } from '../data/projects';
 import { getFlashcardsByStack } from '../data/flashcards';
@@ -207,7 +207,7 @@ export default function Dashboard() {
         </motion.div>
 
         {/* Quick Actions */}
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.45 }} className="mt-8 grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.45 }} className="mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <Link to="/roadmap" className="p-4 rounded-2xl bg-[#161616] border border-white/5 hover:border-purple-500/20 transition-all group">
             <Code2 size={20} className="text-purple-400 mb-2" />
             <h4 className="text-sm font-medium text-white group-hover:text-purple-300 transition-colors">{t('dash.continueBuilding')}</h4>
@@ -217,6 +217,11 @@ export default function Dashboard() {
             <BookOpen size={20} className="text-blue-400 mb-2" />
             <h4 className="text-sm font-medium text-white group-hover:text-blue-300 transition-colors">{t('dash.studyFlashcards')}</h4>
             <p className="text-xs text-gray-500 mt-1">{t('dash.learnKeyConcepts')}</p>
+          </Link>
+          <Link to="/interview-prep" className="p-4 rounded-2xl bg-[#161616] border border-white/5 hover:border-pink-500/20 transition-all group">
+            <MessagesSquare size={20} className="text-pink-400 mb-2" />
+            <h4 className="text-sm font-medium text-white group-hover:text-pink-300 transition-colors">{t('dash.interviewPrep')}</h4>
+            <p className="text-xs text-gray-500 mt-1">{t('dash.practiceQuestions')}</p>
           </Link>
           <Link to="/suggest" className="p-4 rounded-2xl bg-[#161616] border border-white/5 hover:border-green-500/20 transition-all group">
             <Zap size={20} className="text-green-400 mb-2" />

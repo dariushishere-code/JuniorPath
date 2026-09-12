@@ -1,5 +1,5 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import { lazy, Suspense, ComponentType } from 'react';
+import { lazy, Suspense, ComponentType, useEffect } from 'react';
 import { useStore } from './store/useStore';
 import Navbar from './components/Navbar';
 import AppDock from './components/AppDock';
@@ -15,9 +15,13 @@ const Flashcards = lazy(() => import('./pages/Flashcards'));
 const Dashboard = lazy(() => import('./pages/Dashboard'));
 const SuggestProject = lazy(() => import('./pages/SuggestProject'));
 const SnakeGame = lazy(() => import('./pages/SnakeGame'));
+const InterviewPrep = lazy(() => import('./pages/InterviewPrep'));
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
-  const { isAuthenticated } = useStore();
+  const { isAuthenticated, isLoading } = useStore();
+  if (isLoading) {
+    return <PageLoader />;
+  }
   if (!isAuthenticated) {
     return <Navigate to="/login" replace />;
   }
@@ -33,11 +37,20 @@ function PageLoader() {
 }
 
 function App() {
+  const isLoading = useStore((state) => state.isLoading);
+
+  useEffect(() => {
+    void useStore.getState().initialize();
+  }, []);
+
   return (
     <BrowserRouter>
-      <div className="min-h-screen bg-[#0A0A0A] text-white pb-28">
-        <Navbar />
-        <Suspense fallback={<PageLoader />}>
+      {isLoading ? (
+        <PageLoader />
+      ) : (
+        <div className="min-h-screen bg-[#0A0A0A] text-white pb-28">
+          <Navbar />
+          <Suspense fallback={<PageLoader />}>
           <Routes>
             <Route path="/" element={<Landing />} />
             <Route path="/login" element={<Login />} />
@@ -63,11 +76,15 @@ function App() {
             <Route path="/snake" element={
               <ProtectedRoute><SnakeGame /></ProtectedRoute>
             } />
+            <Route path="/interview-prep" element={
+              <ProtectedRoute><InterviewPrep /></ProtectedRoute>
+            } />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </Suspense>
-        <AppDock />
-      </div>
+          <AppDock />
+        </div>
+      )}
     </BrowserRouter>
   );
 }

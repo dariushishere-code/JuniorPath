@@ -1,16 +1,89 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Code2, Mail, Lock, User, ArrowRight, AlertCircle } from 'lucide-react';
-import { useStore } from '../store/useStore';
+import { Code2, Mail, Lock, User, ArrowRight, AlertCircle, KeyRound, CheckCircle2 } from 'lucide-react';
+import {
+  useStore,
+  isValidEmail,
+  sanitizeName,
+  validatePassword,
+  getPasswordStrength,
+  type PasswordStrength,
+} from '../store/useStore';
 import { useLanguage } from '../i18n/useLanguage';
 import { RadialGlowButton } from '../components/ui/radial-glow-button';
 import { PerspectiveGrid } from '../components/ui/perspective-grid';
+
+/** Maps raw Supabase auth errors to a localized translation key. */
+const AUTH_ERROR_MAP: { key: string; test: RegExp }[] = [
+  { key: 'auth.login.error.invalid', test: /invalid login credentials|invalid email/i },
+  { key: 'auth.login.confirmEmail', test: /email not confirmed|confirm your email/i },
+  { key: 'auth.login.error.rateLimited', test: /rate limit/i },
+  { key: 'auth.signup.error.exists', test: /already registered|already been registered/i },
+  { key: 'auth.signup.error.length', test: /at least \d+ characters/i },
+  { key: 'auth.signup.error.email', test: /invalid.*email/i },
+];
+
+function translateAuthError(
+  message: string | undefined,
+  t: (key: string) => string,
+  fallback: string
+): string {
+  const lower = (message ?? '').toLowerCase();
+  for (const entry of AUTH_ERROR_MAP) {
+    if (entry.test.test(lower)) return t(entry.key);
+  }
+  return message || fallback;
+}
+
+/** Success/confirmation banner shown inside the form. */
+function InfoNotice({ message }: { message: string }) {
+  if (!message) return null;
+  return (
+    <div className="flex items-center gap-2 p-3 rounded-lg bg-green-500/10 border border-green-500/20 text-green-400 text-sm">
+      <CheckCircle2 size={16} className="flex-shrink-0" />
+      <span>{message}</span>
+    </div>
+  );
+}
+
+/** Small three-bar password strength indicator used on the sign up form. */
+function PasswordStrengthMeter({ strength }: { strength: PasswordStrength }) {
+  const { t } = useLanguage();
+  const levels = strength === 'strong' ? 3 : strength === 'medium' ? 2 : 1;
+  const label = t('auth.strength.' + strength);
+  const color =
+    strength === 'strong'
+      ? 'bg-green-500'
+      : strength === 'medium'
+        ? 'bg-yellow-500'
+        : 'bg-red-500';
+  return (
+    <div className="mt-2" aria-hidden="true">
+      <div className="flex gap-1">
+        {[0, 1, 2].map((i) => (
+          <div
+            key={i}
+            className={`h-1 flex-1 rounded-full transition-colors ${
+              i < levels ? color : 'bg-white/10'
+            }`}
+          />
+        ))}
+      </div>
+      <span className={`text-[11px] mt-1 inline-block ${
+        strength === 'strong' ? 'text-green-400' : strength === 'medium' ? 'text-yellow-400' : 'text-red-400'
+      }`}>
+        {label}
+      </span>
+    </div>
+  );
+}
 
 export function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [notice, setNotice] = useState('');
   const [loading, setLoading] = useState(false);
   const { login } = useStore();
   const { t } = useLanguage();
@@ -19,17 +92,18 @@ export function Login() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
+    setNotice('');
     if (!email || !password) {
       setError(t('auth.login.error.empty'));
       return;
     }
     setLoading(true);
     try {
-      const success = await login(email, password);
-      if (success) {
+      const result = await login(email, password);
+      if (result.success) {
         navigate('/dashboard');
       } else {
-        setError(t('auth.login.error.invalid'));
+        setError(translateAuthError(result.error, t, t('auth.login.error.invalid')));
       }
     } catch {
       setError(t('auth.login.error.general'));
@@ -71,6 +145,8 @@ export function Login() {
               {error}
             </div>
           )}
+
+          <InfoNotice message={notice} />
 
           <div>
             <label className="block text-sm font-medium text-gray-300 mb-1.5">{t('auth.email')}</label>
@@ -129,29 +205,39 @@ export function Signup() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [notice, setNotice] = useState('');
   const [loading, setLoading] = useState(false);
   const { signup } = useStore();
   const { t } = useLanguage();
   const navigate = useNavigate();
+  const strength = getPasswordStrength(password);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
+    setNotice('');
     if (!name || !email || !password) {
       setError(t('auth.signup.error.empty'));
       return;
     }
-    if (password.length < 6) {
-      setError(t('auth.signup.error.length'));
+    if (!isValidEmail(email)) {
+      setError(t('auth.signup.error.email'));
+      return;
+    }
+    const ruleKey = validatePassword(password);
+    if (ruleKey) {
+      setError(t(ruleKey));
       return;
     }
     setLoading(true);
     try {
-      const success = await signup(email, password, name);
-      if (success) {
+      const result = await signup(email, password, sanitizeName(name));
+      if (result.success && result.needsEmailConfirmation) {
+        setNotice(t('auth.signup.confirmEmail'));
+      } else if (result.success) {
         navigate('/stack-selection');
       } else {
-        setError(t('auth.signup.error.exists'));
+        setError(translateAuthError(result.error, t, t('auth.signup.error.general')));
       }
     } catch {
       setError(t('auth.signup.error.general'));
@@ -194,6 +280,8 @@ export function Signup() {
             </div>
           )}
 
+          <InfoNotice message={notice} />
+
           <div>
             <label className="block text-sm font-medium text-gray-300 mb-1.5">{t('auth.name')}</label>
             <div className="relative">
@@ -234,9 +322,24 @@ export function Signup() {
                 onChange={(e) => setPassword(e.target.value)}
                 disabled={loading}
                 className="w-full pl-10 pr-4 py-3 rounded-xl bg-[#0A0A0A] border border-white/10 text-white placeholder-gray-500 focus:border-purple-500 focus:outline-none transition-colors disabled:opacity-60"
-                placeholder="Min 6 characters"
+                placeholder="Min 8 characters"
               />
             </div>
+            {password.length > 0 && <PasswordStrengthMeter strength={strength} />}
+            <ul className="mt-2 space-y-1 text-[11px] text-gray-500">
+              <li className="flex items-center gap-1.5">
+                <KeyRound size={11} className="text-purple-400" />
+                {t('auth.passwordRules.length')}
+              </li>
+              <li className="flex items-center gap-1.5">
+                <KeyRound size={11} className="text-purple-400" />
+                {t('auth.passwordRules.letter')}
+              </li>
+              <li className="flex items-center gap-1.5">
+                <KeyRound size={11} className="text-purple-400" />
+                {t('auth.passwordRules.number')}
+              </li>
+            </ul>
           </div>
 
           <RadialGlowButton
